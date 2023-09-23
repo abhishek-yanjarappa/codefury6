@@ -29,6 +29,10 @@ import { defaultTheme } from "./theme";
 import { FirebaseAuthentication as FireAuth } from "@capacitor-firebase/authentication";
 import Welcome from "./pages/Auth/Welcome";
 import { useMemo } from "react";
+import Home from "./pages/Home";
+import { getCurrentUser } from "./utils";
+import Guides from "./pages/Guides";
+import Profile from "./pages/Profile";
 setupIonicReact();
 
 const queryClient = new QueryClient({
@@ -51,25 +55,44 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => {
   const currentUser = useMemo(() => {
-    const getUser = async () => {
-      const user = await FireAuth.getCurrentUser();
-      return user;
-    };
-    return getUser();
+    return getCurrentUser();
   }, []);
-  console.log(currentUser, "at app");
   return (
     <IonApp>
       <ThemeProvider theme={defaultTheme}>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-          <QueryClientProvider client={queryClient}></QueryClientProvider>
-          <IonReactRouter>
-            <IonRouterOutlet>
-              <Route exact path="/">
-                <Welcome />
-              </Route>
-            </IonRouterOutlet>
-          </IonReactRouter>
+          <QueryClientProvider client={queryClient}>
+            <IonReactRouter>
+              <IonRouterOutlet>
+                {/* if user is logged in */}
+                {currentUser ? (
+                  <>
+                    <Route exact path="/home">
+                      <Home />
+                    </Route>
+                    <Route exact path="/guides">
+                      <Guides />
+                    </Route>
+                    <Route exact path="/profile">
+                      <Profile />
+                    </Route>
+                    <Route exact path="/*">
+                      <Redirect to="/home" />
+                    </Route>
+                  </>
+                ) : (
+                  <>
+                    <Route exact path="/">
+                      <Welcome />
+                    </Route>
+                    <Route exact path="/*">
+                      <Redirect to="/" />
+                    </Route>
+                  </>
+                )}
+              </IonRouterOutlet>
+            </IonReactRouter>
+          </QueryClientProvider>
         </LocalizationProvider>
       </ThemeProvider>
     </IonApp>

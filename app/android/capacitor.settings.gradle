@@ -14,5 +14,11 @@ project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capa
 include ':capacitor-keyboard'
 project(':capacitor-keyboard').projectDir = new File('../node_modules/.pnpm/@capacitor+keyboard@5.0.6_@capacitor+core@5.4.1/node_modules/@capacitor/keyboard/android')
 
+include ':capacitor-local-notifications'
+project(':capacitor-local-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+local-notifications@5.0.6_@capacitor+core@5.4.1/node_modules/@capacitor/local-notifications/android')
+
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.4.1/node_modules/@capacitor/status-bar/android')
+
+include ':capacitor-phone-event-usage'
+project(':capacitor-phone-event-usage').projectDir = new File('../node_modules/.pnpm/capacitor-phone-event-usage@0.0.2_@capacitor+core@5.4.1/node_modules/capacitor-phone-event-usage/android')

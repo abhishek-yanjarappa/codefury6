@@ -26,6 +26,7 @@
     <div id="root"></div>
     <script>
       var global = window;
+      window.process = { browser: true, env: { ENVIRONMENT: 'BROWSER' }, node:true };
     </script>
     <script type="module" src="/src/index.tsx"></script>
   </body>
