@@ -57,7 +57,7 @@ const App: React.FC = () => {
     };
     return getUser();
   }, []);
-  console.log(currentUser);
+  console.log(currentUser, "at app");
   return (
     <IonApp>
       <ThemeProvider theme={defaultTheme}>
