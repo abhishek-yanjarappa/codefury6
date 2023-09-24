@@ -62,11 +62,14 @@ const Questions = () => {
         };
 
         await addDoc(journalsRef, newJournalEntry);
-        queryClient.invalidateQueries([
-          "todaysJournal",
-          dayjs().format("DD-MM-YYYY"),
-          "all-journals",
-        ]);
+        queryClient.invalidateQueries(["all-journals"]);
+        queryClient.invalidateQueries(["todaysJournal"]);
+        queryClient.setQueryData(
+          ["todaysJournal", dayjs().format("DD-MM-YYYY")],
+          {
+            ...newJournalEntry,
+          }
+        );
       } catch (error) {
         console.error("Error creating journal entry:", error);
       }

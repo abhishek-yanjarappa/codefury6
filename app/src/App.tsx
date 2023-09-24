@@ -32,6 +32,12 @@ import Home from "./pages/Home";
 import { getCurrentUser } from "./utils";
 import Guides from "./pages/Guides";
 import { FirebaseMessaging } from "@capacitor-firebase/messaging";
+import {
+  PushNotificationSchema,
+  PushNotifications,
+  Token,
+  ActionPerformed,
+} from "@capacitor/push-notifications";
 import Profile from "./pages/Profile";
 setupIonicReact();
 
@@ -56,10 +62,12 @@ const queryClient = new QueryClient({
 const App: React.FC = () => {
   useEffect(() => {
     const setUpMessaging = async () => {
+      await PushNotifications.requestPermissions();
+      await PushNotifications.register();
       await FirebaseMessaging.requestPermissions();
       const token = await FirebaseMessaging.getToken();
       console.log("notiftoken", { token });
-      await FirebaseMessaging.subscribeToTopic({ topic: "default" });
+      await FirebaseMessaging.subscribeToTopic({ topic: "news" });
       await FirebaseMessaging.addListener("notificationReceived", (event) => {
         console.log("notificationReceived", { event });
       });
