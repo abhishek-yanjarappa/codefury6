@@ -26,12 +26,12 @@ import "dayjs/locale/en-gb";
 
 import { defaultTheme } from "./theme";
 //@ts-ignore
-import { FirebaseAuthentication as FireAuth } from "@capacitor-firebase/authentication";
 import Welcome from "./pages/Auth/Welcome";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Home from "./pages/Home";
 import { getCurrentUser } from "./utils";
 import Guides from "./pages/Guides";
+import { FirebaseMessaging } from "@capacitor-firebase/messaging";
 import Profile from "./pages/Profile";
 setupIonicReact();
 
@@ -54,9 +54,19 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
-  const currentUser = useMemo(() => {
-    return getCurrentUser();
+  useEffect(() => {
+    const setUpMessaging = async () => {
+      await FirebaseMessaging.requestPermissions();
+      const token = await FirebaseMessaging.getToken();
+      console.log("notiftoken", { token });
+      await FirebaseMessaging.subscribeToTopic({ topic: "default" });
+      await FirebaseMessaging.addListener("notificationReceived", (event) => {
+        console.log("notificationReceived", { event });
+      });
+    };
+    setUpMessaging();
   }, []);
+  const currentUser = getCurrentUser();
   return (
     <IonApp>
       <ThemeProvider theme={defaultTheme}>

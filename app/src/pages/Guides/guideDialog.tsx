@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowLeftSharp, ArrowRight } from "@mui/icons-material";
+import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 import {
   Button,
   Dialog,
@@ -7,7 +7,6 @@ import {
   DialogContentText,
   DialogProps,
   DialogTitle,
-  Icon,
   IconButton,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -15,8 +14,10 @@ import React, { useState } from "react";
 const GuideDialog: React.FC<DialogProps & { data: any }> = ({ ...props }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   return (
-    <Dialog open={props.open} onClose={props?.onClose}>
-      <DialogTitle>Guided Activity for {props.data.emotion}</DialogTitle>
+    <Dialog open={props?.open} onClose={props?.onClose}>
+      <DialogTitle>
+        Guided Activity for {props?.data?.emotion?.split("_")?.join(" ")}
+      </DialogTitle>
 
       <DialogContent>
         <DialogContentText>

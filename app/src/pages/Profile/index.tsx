@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Screen, Window } from "../../components/ui/ViewPort";
-import { Avatar, Box, Button, Modal, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { IonContent } from "@ionic/react";
 import BottomTabs from "../../components/ui/BottomTabs";
 import { getCurrentUser, scheduleNotifications } from "../../utils";
@@ -8,7 +15,7 @@ import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useQuery } from "@tanstack/react-query";
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
-import { TimePicker } from "@mui/x-date-pickers";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
 function getBackgroundColor(moodRating: number) {
@@ -16,11 +23,11 @@ function getBackgroundColor(moodRating: number) {
     case 1:
       return "#ff3f3f";
     case 2:
-      return "orange";
+      return "#ffa82f";
     case 3:
       return "yellow";
     case 4:
-      return "lightgreen";
+      return "#75ffb3";
     case 5:
       return "#00ff5e";
     default:
@@ -31,16 +38,25 @@ function getBackgroundColor(moodRating: number) {
 const Profile = () => {
   const userData = getCurrentUser();
   const [selectedDate, setSelectedDate] = useState(null);
+  const [searchDate, setSearchDate] = useState(null);
   const journalTimeString = localStorage.getItem("journalTime") as string;
   const journalTimeDate = dayjs()
     .set("hour", parseInt(journalTimeString.split(":")[0]))
     .set("minute", parseInt(journalTimeString.split(":")[1]));
 
-  const { data: allJournal, isLoading: isLoadingTodaysJournal } = useQuery(
-    ["all-journals"],
+  const { data: allJournal, isLoading: isLoadingJournal } = useQuery(
+    ["all-journals", searchDate],
     async () => {
       const userRef = doc(db, "users", userData?.uid as string);
       const journalsRef = collection(userRef, "journals");
+      if (searchDate) {
+        const q = query(
+          journalsRef,
+          where("date", "==", dayjs(searchDate).format("DD-MM-YYYY"))
+        );
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs;
+      }
       const q = query(journalsRef);
 
       const querySnapshot = await getDocs(q);
@@ -76,6 +92,7 @@ const Profile = () => {
           </Button>
           <br />
           <TimePicker
+            sx={{ marginY: 2, width: "100%" }}
             label="Journaling Time"
             value={journalTimeDate}
             onAccept={(e) => {
@@ -86,9 +103,16 @@ const Profile = () => {
             onChange={(e) => console.log(dayjs(e).format("HH:mm").toString())}
           />
 
-          <Typography variant="h6" marginTop={3}>
+          <Typography variant="h6" marginTop={2}>
             Your Journal history
           </Typography>
+
+          <DatePicker
+            sx={{ marginY: 2, width: "100%" }}
+            value={searchDate}
+            onChange={(e) => setSearchDate(e)}
+            label="Search by Date"
+          />
 
           <Box width="100%" display={"flex"} gap={1} flexDirection={"column"}>
             {allJournal?.map((journal, k) => (

@@ -25,18 +25,15 @@ export async function scheduleNotifications() {
   LocalNotifications.schedule({
     notifications: [
       {
-        title: "Daily Notification",
-        body: "This is a daily notification",
+        title: "It's time to Journal",
+        body: "It's time rewind and write down what you feel 😌",
         id: 1,
         schedule: {
-          at: new Date(
-            new Date().setHours(
-              Number(notificationTime.split(":")[0]),
-              Number(notificationTime.split(":")[1])
-            )
-          ),
-          repeats: true,
-          every: "day",
+          allowWhileIdle: true,
+          on: {
+            hour: Number(notificationTime.split(":")[0]),
+            minute: Number(notificationTime.split(":")[1]),
+          },
         },
       },
     ],

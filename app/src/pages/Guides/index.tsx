@@ -6,6 +6,7 @@ import { IonContent } from "@ionic/react";
 import { collection, doc, getDocs, query } from "firebase/firestore";
 import { db } from "../../firebase";
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -31,8 +32,7 @@ const Guides = () => {
       const guideRef = collection(db, "guides");
       const q = query(guideRef);
       const querySnapshot = await getDocs(q);
-      console.log(querySnapshot?.docs.map((d) => d.data()));
-      return [{ todo: [""], emotion: "" }];
+      return querySnapshot?.docs.map((d) => d.data());
     }
   );
   return (
@@ -40,34 +40,36 @@ const Guides = () => {
       <Window padding={5}>
         <Typography variant="h6">Guided Activity</Typography>
         <IonContent>
-          {isGuidesLoading ? (
-            <Typography>Loading...</Typography>
-          ) : (
-            allGuides &&
-            allGuides?.map((guide) => (
-              <Card
-                sx={{ width: "100%" }}
-                onClick={() => setGuideDialog({ open: true, data: guide })}
-              >
-                <CardContent>
-                  <Typography
-                    sx={{ fontSize: 14 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Guided Activity
-                  </Typography>
-                  <Typography variant="h5" component="div">
-                    {guide?.emotion}
-                  </Typography>
-                  <Typography variant="body2">
-                    {guide?.todo?.length} Slides
-                    <br />
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))
-          )}
+          <Box display={"flex"} flexDirection={"column"} gap={2}>
+            {isGuidesLoading ? (
+              <Typography>Loading...</Typography>
+            ) : (
+              allGuides &&
+              allGuides?.map((guide) => (
+                <Card
+                  sx={{ width: "100%" }}
+                  onClick={() => setGuideDialog({ open: true, data: guide })}
+                >
+                  <CardContent>
+                    <Typography
+                      sx={{ fontSize: 14 }}
+                      color="text.secondary"
+                      gutterBottom
+                    >
+                      Guided Activity
+                    </Typography>
+                    <Typography variant="h5" component="div">
+                      {guide?.emotion?.split("_").join("")}
+                    </Typography>
+                    <Typography variant="body2">
+                      {guide?.todo?.length} Slides
+                      <br />
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </Box>
         </IonContent>
         <GuideDialog
           data={guideDialog.data}
